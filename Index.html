@@ -7,87 +7,92 @@
     <link rel="icon" type="image/png" sizes="512x512" href="https://upload.wikimedia.org/wikipedia/commons/7/70/Roblox_Corporation_2025_logo.svg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=Inter:ital,opsz,wght@0,14..32,400..900;1,14..32,400..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
         html { scroll-behavior: smooth; }
+        
+        :root {
+            --glass-bg: rgba(255, 255, 255, 0.42);
+            --glass-bg-hover: rgba(255, 255, 255, 0.65);
+            --glass-border: rgba(255, 255, 255, 0.85);
+            --glass-inner: inset 0 1px 2px rgba(255, 255, 255, 0.95), inset 0 -1px 1px rgba(219, 39, 119, 0.15);
+            --glass-shadow: 0 20px 50px rgba(131, 24, 67, 0.15);
+            --ink: #2d1226;
+            --ink-soft: #5a3851;
+            --accent-pink: #ec4899;
+            --accent-purple: #9333ea;
+        }
+
         body { 
-            background: linear-gradient(135deg, rgba(253, 242, 248, 0.65) 0%, rgba(252, 231, 243, 0.7) 50%, rgba(243, 229, 245, 0.75) 100%),
+            background: linear-gradient(135deg, rgba(252, 231, 243, 0.85) 0%, rgba(243, 229, 245, 0.9) 50%, rgba(251, 207, 232, 0.85) 100%),
                         url('https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=1920&q=80') center/cover fixed no-repeat;
             background-blend-mode: overlay;
-            color: #1f1124; 
-            font-family: "Inter", system-ui, sans-serif; 
-            line-height: 1.6; 
+            color: var(--ink); 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            line-height: 1.5; 
             min-height: 100vh; 
             overflow-x: hidden; 
         }
+
         a { color: inherit; text-decoration: none; }
         button { padding: 0; border: 0; color: inherit; background: none; font: inherit; cursor: pointer; }
-        svg, img { display: block; max-width: 100%; }
-        .wrap { width: min(1240px, 92vw); margin-inline: auto; }
+        img { display: block; max-width: 100%; }
+        .wrap { width: min(1200px, 92vw); margin-inline: auto; }
 
         .glass-panel {
-            background: rgba(255, 255, 255, 0.55);
-            backdrop-filter: blur(28px) saturate(200%);
-            -webkit-backdrop-filter: blur(28px) saturate(200%);
-            border: 1px solid rgba(255, 255, 255, 0.85);
-            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.95), 0 16px 40px rgba(219, 39, 119, 0.12);
-            border-radius: 22px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(30px) saturate(210%);
+            -webkit-backdrop-filter: blur(30px) saturate(210%);
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--glass-inner), var(--glass-shadow);
+            border-radius: 24px;
         }
 
         #loading-screen {
             position: fixed; inset: 0; z-index: 99999;
-            background: radial-gradient(circle at 50% 50%, #4a154b, #200724 90%);
+            background: radial-gradient(circle at 50% 50%, #581c40, #1f091c 90%);
             display: flex; flex-direction: column; justify-content: center; align-items: center;
             opacity: 1; visibility: visible;
-            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.8s;
+            transition: opacity 0.7s ease, visibility 0.7s ease;
         }
-        #loading-screen.fade-out { opacity: 0; transform: scale(1.05); visibility: hidden; pointer-events: none; }
-        .loader-grid-orbit { position: relative; width: 110px; height: 110px; display: flex; align-items: center; justify-content: center; }
-        .loader-ring-outer { position: absolute; inset: 0; border-radius: 50%; border: 2px dashed rgba(244,114,182,0.4); animation: spin 8s linear infinite; }
-        .loader-ring-inner { position: absolute; inset: 12px; border-radius: 50%; border: 2px solid transparent; border-top: 2px solid #f472b6; border-bottom: 2px solid #c084fc; animation: spin-reverse 1.5s linear infinite; }
-        .loader-core { width: 50px; height: 50px; background: linear-gradient(135deg, #db2777, #a855f7); border-radius: 14px; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 35px rgba(219,39,119,0.7); }
-        .loader-core i { font-size: 20px; color: #fff; }
-        .loading-title { margin-top: 28px; font-weight: 700; font-size: 19px; letter-spacing: 3px; font-family: "Chakra Petch", sans-serif; color: #fff; }
-        .loading-title span { color: #f472b6; }
-        .loading-bar-track { width: 260px; height: 5px; background: rgba(255,255,255,0.1); border-radius: 6px; margin-top: 18px; overflow: hidden; border: 1px solid rgba(255,255,255,0.2); }
-        .loading-bar-fill { width: 0%; height: 100%; background: linear-gradient(90deg, #db2777, #f472b6, #c084fc); border-radius: 6px; transition: width 0.25s ease-out; }
-        .loading-text { font-size: 12px; color: #fbcfe8; margin-top: 12px; font-family: "Chakra Petch", sans-serif; }
+        #loading-screen.fade-out { opacity: 0; visibility: hidden; pointer-events: none; }
+        
+        .loader-orbit { position: relative; width: 90px; height: 90px; display: flex; align-items: center; justify-content: center; }
+        .loader-ring { position: absolute; inset: 0; border-radius: 50%; border: 3px solid transparent; border-top-color: #f472b6; border-bottom-color: #c084fc; animation: spin 1.2s linear infinite; }
+        .loader-core { width: 42px; height: 42px; background: linear-gradient(135deg, #db2777, #9333ea); border-radius: 12px; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 25px rgba(219,39,119,0.8); color: #fff; font-size: 16px; }
         @keyframes spin { to { transform: rotate(360deg); } }
-        @keyframes spin-reverse { to { transform: rotate(-360deg); } }
 
-        #app-content { opacity: 0; transform: translateY(20px); transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1), transform 0.9s cubic-bezier(0.16, 1, 0.3, 1); padding-bottom: 40px; }
+        #app-content { opacity: 0; transform: translateY(12px); transition: opacity 0.8s ease, transform 0.8s ease; padding-bottom: 50px; }
         #app-content.visible { opacity: 1; transform: translateY(0); }
 
         .navbar {
             display: flex; justify-content: space-between; align-items: center;
-            padding: 14px 24px; background: rgba(255, 255, 255, 0.65);
-            backdrop-filter: blur(20px) saturate(180%); -webkit-backdrop-filter: blur(20px) saturate(180%);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.8);
-            position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 20px rgba(219,39,119,0.08);
+            padding: 12px 24px; background: rgba(255, 255, 255, 0.48);
+            backdrop-filter: blur(25px) saturate(190%); -webkit-backdrop-filter: blur(25px) saturate(190%);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.75);
+            position: sticky; top: 0; z-index: 100;
+            box-shadow: 0 8px 32px rgba(131, 24, 67, 0.08);
         }
-        .nav-brand { display: flex; align-items: center; gap: 10px; font-family: "Chakra Petch", sans-serif; font-weight: 700; font-size: 1.1rem; color: #831843; }
-        .brand-icon { width: 32px; height: 32px; background: linear-gradient(135deg, #db2777, #c084fc); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #fff; box-shadow: 0 4px 12px rgba(219,39,119,0.4); }
-        .nav-brand span span { color: #db2777; }
+        .nav-brand { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 1.1rem; color: #831843; letter-spacing: -0.01em; }
+        .brand-icon { width: 34px; height: 34px; background: linear-gradient(135deg, #db2777, #9333ea); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #fff; box-shadow: 0 4px 12px rgba(219,39,119,0.35); }
+
+        .browser-modal-overlay { position: fixed; inset: 0; width: 100%; height: 100%; background: rgba(20,5,15,0.65); z-index: 99999; display: none; align-items: center; justify-content: center; backdrop-filter: blur(10px); }
+        .browser-modal-overlay.active { display: flex; animation: fadeIn 0.25s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.97); } to { opacity: 1; transform: scale(1); } }
         
-        .browser-modal-overlay { position: fixed; inset: 0; width: 100%; height: 100%; background: rgba(30,10,25,0.7); z-index: 99999; display: none; align-items: center; justify-content: center; backdrop-filter: blur(8px); }
-        .browser-modal-overlay.active { display: flex; animation: fadeIn 0.3s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: scale(0.96); } to { opacity: 1; transform: scale(1); } }
-        .chrome-window { width: 100%; max-width: 1100px; height: 100vh; height: 100dvh; background: #fff; display: flex; flex-direction: column; box-shadow: 0 25px 60px rgba(0,0,0,0.5); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+        .chrome-window { width: 100%; max-width: 1100px; height: 100vh; height: 100dvh; background: #fff; display: flex; flex-direction: column; box-shadow: 0 25px 60px rgba(0,0,0,0.4); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
         .chrome-titlebar { background: #dee1e6; height: 38px; display: flex; align-items: center; justify-content: space-between; padding: 0 4px; flex-shrink: 0; }
-        .chrome-tabs { display: flex; height: 32px; margin-top: 6px; gap: 0; }
-        .chrome-tab { background: #fff; border-radius: 8px 8px 0 0; padding: 0 10px; min-width: 130px; max-width: 180px; display: flex; align-items: center; }
-        .chrome-tab-icon { width: 14px; height: 14px; margin-right: 6px; }
-        .chrome-tab-title { font-size: 11px; color: #333; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 500; }
-        .chrome-tab-close { font-size: 13px; color: #5f6368; cursor: pointer; margin-left: auto; width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
+        .chrome-tabs { display: flex; height: 32px; margin-top: 6px; }
+        .chrome-tab { background: #fff; border-radius: 8px 8px 0 0; padding: 0 12px; min-width: 140px; display: flex; align-items: center; gap: 6px; }
+        .chrome-tab-title { font-size: 11px; color: #333; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 500; flex-grow: 1; }
+        .chrome-tab-close { font-size: 13px; color: #5f6368; cursor: pointer; width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
         .chrome-tab-close:hover { background: #e81123; color: white; }
-        .chrome-window-controls span { width: 36px; height: 32px; display: flex; align-items: center; justify-content: center; font-size: 13px; color: #333; cursor: pointer; }
+        .chrome-window-controls .chrome-close-btn { width: 36px; height: 32px; display: flex; align-items: center; justify-content: center; font-size: 13px; color: #333; cursor: pointer; }
         .chrome-window-controls .chrome-close-btn:hover { background: #e81123; color: white; }
         .chrome-toolbar { background: #fff; height: 42px; display: flex; align-items: center; padding: 0 10px; border-bottom: 1px solid #dadce0; gap: 8px; flex-shrink: 0; }
-        .chrome-icon { width: 26px; height: 26px; padding: 4px; border-radius: 50%; fill: #5f6368; cursor: pointer; }
         .chrome-address-bar { flex-grow: 1; background: #f1f3f4; height: 30px; border-radius: 15px; display: flex; align-items: center; padding: 0 12px; gap: 6px; }
-        .chrome-lock { width: 12px; height: 12px; fill: #5f6368; flex-shrink: 0; }
         .chrome-url { font-size: 12px; color: #202124; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex-grow: 1; }
         .chrome-url-dim { color: #5f6368; }
         .browser-content { flex-grow: 1; background: #fff; display: flex; flex-direction: column; min-height: 0; }
@@ -96,88 +101,111 @@
     </style>
 </head>
 <body>
+
+    <!-- Loading Screen -->
     <div id="loading-screen">
-        <div class="loader-grid-orbit">
-            <div class="loader-ring-outer"></div>
-            <div class="loader-ring-inner"></div>
+        <div class="loader-orbit">
+            <div class="loader-ring"></div>
             <div class="loader-core"><i class="fa-solid fa-gem"></i></div>
         </div>
-        <div class="loading-title">PINK GALAXY <span>SECURE HUB</span></div>
-        <div class="loading-bar-track">
-            <div class="loading-bar-fill" id="loading-bar"></div>
-        </div>
-        <div class="loading-text" id="loading-text">Loading...</div>
+        <div style="margin-top: 20px; font-weight: 700; font-size: 14px; letter-spacing: 2px; color: #fce7f3; font-family: 'Plus Jakarta Sans', sans-serif;">PINK GALAXY HUB</div>
     </div>
 
+    <!-- Main Content -->
     <div id="app-content">
         <header class="navbar">
             <div class="nav-brand">
                 <div class="brand-icon"><i class="fa-solid fa-gem"></i></div>
-                <span>PINK GALAXY <span>CONDO HUB</span></span>
+                <span>Pink Galaxy Hub</span>
             </div>
             <div>
-                <a href="https://discord.gg/VEMNjavWzP" target="_blank" rel="noopener noreferrer" style="background: #5865F2; color: #fff; padding: 6px 14px; border-radius: 10px; font-size: 0.78rem; font-weight: 600;"><i class="fa-brands fa-discord"></i> Discord</a>
+                <a href="https://discord.gg/VEMNjavWzP" target="_blank" rel="noopener noreferrer" style="background: #5865F2; color: #fff; padding: 7px 14px; border-radius: 10px; font-size: 0.78rem; font-weight: 700; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 4px 12px rgba(88,101,242,0.3);"><i class="fa-brands fa-discord"></i> Discord</a>
             </div>
         </header>
 
-        <section class="wrap" style="padding-top: 40px;">
-            <div class="glass-panel" style="padding: 30px; position: relative; overflow: hidden; background: rgba(255, 255, 255, 0.45);">
-                <div style="position: relative; z-index: 2; max-width: 600px;">
-                    <span style="display: inline-flex; align-items: center; gap: 6px; font-size: 0.75rem; font-weight: 700; color: #db2777; background: rgba(219,39,119,0.1); padding: 4px 12px; border-radius: 20px; border: 1px solid rgba(219,39,119,0.2); margin-bottom: 14px; font-family: 'Chakra Petch', sans-serif;">
-                        <i class="fa-solid fa-circle" style="font-size: 6px;"></i> Bright Glass UI
+        <!-- Hero Banner -->
+        <section class="wrap" style="padding-top: 32px;">
+            <div class="glass-panel" style="padding: 32px; position: relative; overflow: hidden;">
+                <div style="position: relative; z-index: 2; max-width: 620px;">
+                    <span style="display: inline-flex; align-items: center; gap: 6px; font-size: 0.72rem; font-weight: 800; color: #be185d; background: rgba(255,255,255,0.6); padding: 5px 12px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.9); margin-bottom: 12px; box-shadow: 0 2px 8px rgba(131,24,67,0.06);">
+                        <i class="fa-solid fa-circle" style="font-size: 6px; color: #db2777;"></i> Liquid Glass UI • Active Private Nodes
                     </span>
-                    <h1 style="font-family: 'Chakra Petch', sans-serif; font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 800; line-height: 1.1; margin-bottom: 12px; color: #831843;">
-                        Pink Galaxy <span style="color: #db2777; text-shadow: 0 0 20px rgba(219,39,119,0.3);">Condo Hub</span>
+                    <h1 style="font-size: clamp(1.7rem, 3.5vw, 2.5rem); font-weight: 800; line-height: 1.15; margin-bottom: 10px; color: #831843; letter-spacing: -0.02em;">
+                        Private Condo Game Servers & Vibe Rooms
                     </h1>
-                    <p style="font-size: 0.92rem; color: #4a3b4c; margin-bottom: 20px;">
-                        Grab a spot in these active private servers. Fast loads, clean liquid glass design, and live player updates built right in.
+                    <p style="font-size: 0.88rem; color: var(--ink-soft); margin-bottom: 20px; font-weight: 500;">
+                        Smooth frame rates, verified active sessions, live fluctuating player counts, and instant connection tunnels built with gorgeous pink glass aesthetics.
                     </p>
-                    <button onclick="launchPrimaryServer()" style="background: linear-gradient(135deg, #db2777, #9333ea); color: #fff; font-family: 'Chakra Petch', sans-serif; font-weight: 700; padding: 12px 24px; border-radius: 14px; box-shadow: 0 8px 25px rgba(219,39,119,0.4); display: inline-flex; align-items: center; gap: 8px;">
-                        <i class="fa-solid fa-play"></i> Quick Join
+                    <button onclick="openServer('srv_01')" style="background: linear-gradient(135deg, #db2777, #9333ea); color: #fff; font-weight: 700; padding: 11px 22px; border-radius: 12px; box-shadow: 0 6px 20px rgba(219,39,119,0.35); display: inline-flex; align-items: center; gap: 8px; font-size: 0.88rem;">
+                        <i class="fa-solid fa-play"></i> Quick Join Main Room
                     </button>
                 </div>
             </div>
         </section>
 
-        <section class="wrap" style="margin-top: 24px;">
-            <div class="glass-panel" style="display: grid; grid-template-columns: repeat(2, 1fr); padding: 20px; text-align: center; gap: 10px;">
-                <div><div style="font-size: 1.5rem; font-weight: 800; color: #be185d; font-family: 'Chakra Petch';" id="totalActivePlayers">28,400</div><div style="font-size: 0.72rem; color: #6b4c65; font-weight: 600;">ACTIVE PLAYERS</div></div>
-                <div><div style="font-size: 1.5rem; font-weight: 800; color: #be185d; font-family: 'Chakra Petch';" id="onlineCount">124</div><div style="font-size: 0.72rem; color: #6b4c65; font-weight: 600;">ONLINE NOW</div></div>
+        <!-- Live Stats Ticker -->
+        <section class="wrap" style="margin-top: 20px;">
+            <div class="glass-panel" style="display: grid; grid-template-columns: repeat(2, 1fr); padding: 16px; text-align: center; gap: 10px;">
+                <div>
+                    <div style="font-size: 1.35rem; font-weight: 800; color: #be185d;" id="totalActivePlayers">28,450</div>
+                    <div style="font-size: 0.7rem; color: var(--ink-soft); font-weight: 700; letter-spacing: 0.05em;">TOTAL PLAYERS</div>
+                </div>
+                <div>
+                    <div style="font-size: 1.35rem; font-weight: 800; color: #be185d;" id="onlineCount">124</div>
+                    <div style="font-size: 0.7rem; color: var(--ink-soft); font-weight: 700; letter-spacing: 0.05em;">SERVERS ONLINE</div>
+                </div>
             </div>
         </section>
 
-        <section class="wrap" style="margin-top: 40px;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                <h2 style="font-family: 'Chakra Petch', sans-serif; font-size: 1.4rem; font-weight: 700; color: #831843;">Active Servers</h2>
-                <div style="width: 240px;">
-                    <input type="text" id="searchInput" placeholder="Search servers..." oninput="renderServers()" style="width: 100%; background: rgba(255,255,255,0.7); border: 1px solid rgba(255,255,255,0.9); border-radius: 10px; padding: 7px 12px; font-size: 0.8rem; outline: none;">
+        <!-- Server Grid Section -->
+        <section class="wrap" style="margin-top: 32px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 12px;">
+                <h2 style="font-size: 1.3rem; font-weight: 800; color: #831843;">Browse Servers</h2>
+                <div style="width: 100%; max-width: 260px;">
+                    <input type="text" id="searchInput" placeholder="Search servers..." oninput="renderServers()" style="width: 100%; background: rgba(255,255,255,0.6); border: 1px solid rgba(255,255,255,0.9); border-radius: 10px; padding: 8px 12px; font-size: 0.82rem; outline: none; box-shadow: inset 0 1px 2px rgba(0,0,0,0.04); color: var(--ink);">
                 </div>
             </div>
 
             <style>
-                .servers-grid { display: grid; grid-template-columns: 1fr; gap: 18px; }
-                @media(min-width: 640px) { .servers-grid { grid-template-columns: repeat(2, 1fr); } }
-                @media(min-width: 1024px) { .servers-grid { grid-template-columns: repeat(3, 1fr); } }
-                .server-card { background: rgba(255, 255, 255, 0.5); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.85); border-radius: 18px; overflow: hidden; display: flex; flex-direction: column; transition: transform 0.2s, box-shadow 0.2s; box-shadow: inset 0 1px 0 rgba(255,255,255,0.9), 0 10px 30px rgba(219,39,119,0.08); cursor: pointer; }
-                .server-card:hover { transform: translateY(-3px); box-shadow: inset 0 1px 0 rgba(255,255,255,0.95), 0 16px 36px rgba(219,39,119,0.18); background: rgba(255, 255, 255, 0.68); }
+                .servers-grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
+                @media(min-width: 600px) { .servers-grid { grid-template-columns: repeat(2, 1fr); } }
+                @media(min-width: 950px) { .servers-grid { grid-template-columns: repeat(3, 1fr); } }
+                
+                .server-card {
+                    background: rgba(255, 255, 255, 0.45);
+                    backdrop-filter: blur(24px) saturate(190%);
+                    -webkit-backdrop-filter: blur(24px) saturate(190%);
+                    border: 1px solid rgba(255, 255, 255, 0.85);
+                    border-radius: 18px; overflow: hidden; display: flex; flex-direction: column;
+                    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+                    box-shadow: inset 0 1px 2px rgba(255,255,255,0.9), 0 10px 30px rgba(131,24,67,0.08);
+                    cursor: pointer;
+                }
+                .server-card:hover {
+                    transform: translateY(-3px);
+                    background: rgba(255, 255, 255, 0.65);
+                    box-shadow: inset 0 1px 2px rgba(255,255,255,0.95), 0 16px 36px rgba(131,24,67,0.15);
+                }
             </style>
             
             <div class="servers-grid" id="serverGridContainer"></div>
         </section>
 
-        <footer style="margin-top: 60px; padding: 24px 0; border-top: 1px solid rgba(255,255,255,0.5); background: rgba(255,255,255,0.3); text-align: center;">
-            <div class="wrap" style="color: #6b4c65; font-size: 0.8rem;">
-                <p>Pink Galaxy Condo Hub</p>
+        <!-- Footer -->
+        <footer style="margin-top: 50px; padding: 20px 0; border-top: 1px solid rgba(255,255,255,0.4); text-align: center;">
+            <div class="wrap" style="color: var(--ink-soft); font-size: 0.78rem; font-weight: 600;">
+                <p>Pink Galaxy Condo Hub • Secure Connection Gateway</p>
             </div>
         </footer>
     </div>
 
+    <!-- Browser Modal -->
     <div id="browserModal" class="browser-modal-overlay">
         <div class="chrome-window">
             <div class="chrome-titlebar">
                 <div class="chrome-tabs">
                     <div class="chrome-tab">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/7/70/Roblox_Corporation_2025_logo.svg" class="chrome-tab-icon" alt="Logo">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/7/70/Roblox_Corporation_2025_logo.svg" width="14" height="14" alt="Logo">
                         <span class="chrome-tab-title" id="modalTabTitle">Session Window</span>
                         <span class="chrome-tab-close" id="closeTabBtn">&times;</span>
                     </div>
@@ -188,7 +216,7 @@
             </div>
             <div class="chrome-toolbar">
                 <div class="chrome-address-bar">
-                    <svg viewBox="0 0 24 24" class="chrome-lock"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"></path></svg>
+                    <svg viewBox="0 0 24 24" width="12" height="12" fill="#5f6368"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
                     <span class="chrome-url" id="fakeUrlText"><span class="chrome-url-dim">https://</span>roblox.com/...</span>
                 </div>
             </div>
@@ -277,7 +305,12 @@
 
         document.addEventListener("DOMContentLoaded", () => {
             renderServers();
-            startLoadingSequence();
+            setTimeout(() => {
+                const screen = document.getElementById('loading-screen');
+                const app = document.getElementById('app-content');
+                if(screen) screen.classList.add('fade-out');
+                if(app) app.classList.add('visible');
+            }, 600);
         });
 
         function renderServers() {
@@ -287,66 +320,40 @@
             const filtered = appConfig.servers.filter(s => s.name.toLowerCase().includes(query) || s.desc.toLowerCase().includes(query));
 
             if (filtered.length === 0) {
-                gridContainer.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #6b4c65;">No servers found.</div>`;
+                gridContainer.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--ink-soft); font-weight: 600;">No matching servers found.</div>`;
                 return;
             }
 
             gridContainer.innerHTML = filtered.map(srv => `
                 <div class="server-card" onclick="openServer('${srv.id}')">
-                    <div style="position: relative; width: 100%; height: 155px; background: #eee;">
-                        <span style="position: absolute; top: 10px; right: 10px; background: rgba(219,39,119,0.3); border: 1px solid rgba(219,39,119,0.5); color: #fda4af; font-size: 9px; font-weight: 700; padding: 3px 8px; border-radius: 12px; backdrop-filter: blur(4px); font-family: 'Chakra Petch';">ONLINE</span>
-                        <span style="position: absolute; bottom: 10px; right: 10px; background: rgba(255,255,255,0.85); color: #059669; font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 6px; backdrop-filter: blur(4px);"><i class="fa-solid fa-wifi" style="font-size: 8px;"></i> ${srv.ping}</span>
+                    <div style="position: relative; width: 100%; height: 145px; background: rgba(0,0,0,0.05);">
+                        <span style="position: absolute; top: 10px; right: 10px; background: rgba(219,39,119,0.35); border: 1px solid rgba(255,255,255,0.7); color: #fff; font-size: 9px; font-weight: 800; padding: 3px 8px; border-radius: 20px; backdrop-filter: blur(4px);">ONLINE</span>
+                        <span style="position: absolute; bottom: 10px; right: 10px; background: rgba(255,255,255,0.85); color: #059669; font-size: 10px; font-weight: 800; padding: 2px 7px; border-radius: 6px; backdrop-filter: blur(4px);"><i class="fa-solid fa-wifi" style="font-size: 8px;"></i> ${srv.ping}</span>
                         <img src="${srv.thumb}" alt="${srv.name}" style="width: 100%; height: 100%; object-fit: cover;">
                     </div>
                     <div style="padding: 16px; display: flex; flex-direction: column; flex-grow: 1;">
-                        <div style="font-size: 1rem; font-weight: 800; color: #831843; margin-bottom: 6px; font-family: 'Chakra Petch';">${srv.name}</div>
-                        <div style="font-size: 0.78rem; color: #5a3e54; margin-bottom: 12px; line-height: 1.4;">${srv.desc}</div>
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: auto; margin-bottom: 12px; font-size: 0.78rem; font-weight: 700; color: #6b4c65;">
+                        <div style="font-size: 0.98rem; font-weight: 800; color: #831843; margin-bottom: 4px;">${srv.name}</div>
+                        <div style="font-size: 0.78rem; color: var(--ink-soft); margin-bottom: 12px; line-height: 1.4;">${srv.desc}</div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: auto; margin-bottom: 12px; font-size: 0.78rem; font-weight: 700; color: var(--ink);">
                             <span style="color: #d97706;">⭐ ${srv.rating}</span>
-                            <span><i class="fa-solid fa-user" style="font-size: 9px;"></i> <span id="player-count-${srv.id}">${srv.currentPlayers}</span> / ${srv.maxPlayers}</span>
+                            <span><i class="fa-solid fa-user" style="font-size: 9px; color: var(--ink-soft);"></i> <span id="player-count-${srv.id}">${srv.currentPlayers}</span>/${srv.maxPlayers}</span>
                         </div>
-                        <button style="width: 100%; padding: 10px; background: linear-gradient(135deg, #db2777, #9333ea); border-radius: 10px; color: white; font-weight: 700; font-size: 0.82rem; font-family: 'Chakra Petch'; box-shadow: 0 4px 14px rgba(219,39,119,0.3);">JOIN GAME</button>
+                        <button style="width: 100%; padding: 9px; background: linear-gradient(135deg, #db2777, #9333ea); border-radius: 10px; color: white; font-weight: 700; font-size: 0.82rem; box-shadow: 0 4px 14px rgba(219,39,119,0.3);">JOIN GAME</button>
                     </div>
                 </div>
             `).join('');
-        }
-
-        function startLoadingSequence() {
-            const bar = document.getElementById('loading-bar');
-            const text = document.getElementById('loading-text');
-            const screen = document.getElementById('loading-screen');
-            const app = document.getElementById('app-content');
-            let progress = 0;
-
-            const interval = setInterval(() => {
-                if (progress >= 100) {
-                    clearInterval(interval);
-                    screen.classList.add('fade-out');
-                    app.classList.add('visible');
-                    setTimeout(() => screen.style.display = 'none', 800);
-                } else {
-                    progress += Math.floor(Math.random() * 10) + 5;
-                    if (progress > 100) progress = 100;
-                    bar.style.width = progress + '%';
-                    text.innerText = `Loading... [${progress}%]`;
-                }
-            }, 50);
         }
 
         setInterval(() => {
             appConfig.servers.forEach(srv => {
                 const delta = Math.floor(Math.random() * 3) - 1;
                 srv.currentPlayers += delta;
-                if (srv.currentPlayers < 6) srv.currentPlayers = 6;
+                if (srv.currentPlayers < 4) srv.currentPlayers = 4;
                 if (srv.currentPlayers > srv.maxPlayers) srv.currentPlayers = srv.maxPlayers;
                 const el = document.getElementById(`player-count-${srv.id}`);
                 if (el) el.innerText = srv.currentPlayers;
             });
-        }, 3500);
-
-        function launchPrimaryServer() {
-            openServer('srv_01');
-        }
+        }, 3000);
 
         function openServer(serverId) {
             const srv = appConfig.servers.find(s => s.id === serverId);

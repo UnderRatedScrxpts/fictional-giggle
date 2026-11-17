@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>Pink Galaxy Condo Hub</title>
+    <link rel="icon" type="image/png" sizes="512x512" href="https://upload.wikimedia.org/wikipedia/commons/7/70/Roblox_Corporation_2025_logo.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=Inter:ital,opsz,wght@0,14..32,400..900;1,14..32,400..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        html { scroll-behavior: smooth; }
+        body { 
+            background: linear-gradient(135deg, rgba(253, 242, 248, 0.65) 0%, rgba(252, 231, 243, 0.7) 50%, rgba(243, 229, 245, 0.75) 100%),
+                        url('https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=1920&q=80') center/cover fixed no-repeat;
+            background-blend-mode: overlay;
+            color: #1f1124; 
+            font-family: "Inter", system-ui, sans-serif; 
+            line-height: 1.6; 
+            min-height: 100vh; 
+            overflow-x: hidden; 
+        }
+        a { color: inherit; text-decoration: none; }
+        button { padding: 0; border: 0; color: inherit; background: none; font: inherit; cursor: pointer; }
+        svg, img { display: block; max-width: 100%; }
+        .wrap { width: min(1240px, 92vw); margin-inline: auto; }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.55);
+            backdrop-filter: blur(28px) saturate(200%);
+            -webkit-backdrop-filter: blur(28px) saturate(200%);
+            border: 1px solid rgba(255, 255, 255, 0.85);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.95), 0 16px 40px rgba(219, 39, 119, 0.12);
+            border-radius: 22px;
+        }
+
+        #loading-screen {
+            position: fixed; inset: 0; z-index: 99999;
+            background: radial-gradient(circle at 50% 50%, #4a154b, #200724 90%);
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            opacity: 1; visibility: visible;
+            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.8s;
+        }
+        #loading-screen.fade-out { opacity: 0; transform: scale(1.05); visibility: hidden; pointer-events: none; }
+        .loader-grid-orbit { position: relative; width: 110px; height: 110px; display: flex; align-items: center; justify-content: center; }
+        .loader-ring-outer { position: absolute; inset: 0; border-radius: 50%; border: 2px dashed rgba(244,114,182,0.4); animation: spin 8s linear infinite; }
+        .loader-ring-inner { position: absolute; inset: 12px; border-radius: 50%; border: 2px solid transparent; border-top: 2px solid #f472b6; border-bottom: 2px solid #c084fc; animation: spin-reverse 1.5s linear infinite; }
+        .loader-core { width: 50px; height: 50px; background: linear-gradient(135deg, #db2777, #a855f7); border-radius: 14px; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 35px rgba(219,39,119,0.7); }
+        .loader-core i { font-size: 20px; color: #fff; }
+        .loading-title { margin-top: 28px; font-weight: 700; font-size: 19px; letter-spacing: 3px; font-family: "Chakra Petch", sans-serif; color: #fff; }
+        .loading-title span { color: #f472b6; }
+        .loading-bar-track { width: 260px; height: 5px; background: rgba(255,255,255,0.1); border-radius: 6px; margin-top: 18px; overflow: hidden; border: 1px solid rgba(255,255,255,0.2); }
+        .loading-bar-fill { width: 0%; height: 100%; background: linear-gradient(90deg, #db2777, #f472b6, #c084fc); border-radius: 6px; transition: width 0.25s ease-out; }
+        .loading-text { font-size: 12px; color: #fbcfe8; margin-top: 12px; font-family: "Chakra Petch", sans-serif; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        @keyframes spin-reverse { to { transform: rotate(-360deg); } }
+
+        #app-content { opacity: 0; transform: translateY(20px); transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1), transform 0.9s cubic-bezier(0.16, 1, 0.3, 1); padding-bottom: 40px; }
+        #app-content.visible { opacity: 1; transform: translateY(0); }
+
+        .navbar {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 14px 24px; background: rgba(255, 255, 255, 0.65);
+            backdrop-filter: blur(20px) saturate(180%); -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.8);
+            position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 20px rgba(219,39,119,0.08);
+        }
+        .nav-brand { display: flex; align-items: center; gap: 10px; font-family: "Chakra Petch", sans-serif; font-weight: 700; font-size: 1.1rem; color: #831843; }
+        .brand-icon { width: 32px; height: 32px; background: linear-gradient(135deg, #db2777, #c084fc); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #fff; box-shadow: 0 4px 12px rgba(219,39,119,0.4); }
+        .nav-brand span span { color: #db2777; }
+        
+        .browser-modal-overlay { position: fixed; inset: 0; width: 100%; height: 100%; background: rgba(30,10,25,0.7); z-index: 99999; display: none; align-items: center; justify-content: center; backdrop-filter: blur(8px); }
+        .browser-modal-overlay.active { display: flex; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.96); } to { opacity: 1; transform: scale(1); } }
+        .chrome-window { width: 100%; max-width: 1100px; height: 100vh; height: 100dvh; background: #fff; display: flex; flex-direction: column; box-shadow: 0 25px 60px rgba(0,0,0,0.5); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+        .chrome-titlebar { background: #dee1e6; height: 38px; display: flex; align-items: center; justify-content: space-between; padding: 0 4px; flex-shrink: 0; }
+        .chrome-tabs { display: flex; height: 32px; margin-top: 6px; gap: 0; }
+        .chrome-tab { background: #fff; border-radius: 8px 8px 0 0; padding: 0 10px; min-width: 130px; max-width: 180px; display: flex; align-items: center; }
+        .chrome-tab-icon { width: 14px; height: 14px; margin-right: 6px; }
+        .chrome-tab-title { font-size: 11px; color: #333; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 500; }
+        .chrome-tab-close { font-size: 13px; color: #5f6368; cursor: pointer; margin-left: auto; width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
+        .chrome-tab-close:hover { background: #e81123; color: white; }
+        .chrome-window-controls span { width: 36px; height: 32px; display: flex; align-items: center; justify-content: center; font-size: 13px; color: #333; cursor: pointer; }
+        .chrome-window-controls .chrome-close-btn:hover { background: #e81123; color: white; }
+        .chrome-toolbar { background: #fff; height: 42px; display: flex; align-items: center; padding: 0 10px; border-bottom: 1px solid #dadce0; gap: 8px; flex-shrink: 0; }
+        .chrome-icon { width: 26px; height: 26px; padding: 4px; border-radius: 50%; fill: #5f6368; cursor: pointer; }
+        .chrome-address-bar { flex-grow: 1; background: #f1f3f4; height: 30px; border-radius: 15px; display: flex; align-items: center; padding: 0 12px; gap: 6px; }
+        .chrome-lock { width: 12px; height: 12px; fill: #5f6368; flex-shrink: 0; }
+        .chrome-url { font-size: 12px; color: #202124; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex-grow: 1; }
+        .chrome-url-dim { color: #5f6368; }
+        .browser-content { flex-grow: 1; background: #fff; display: flex; flex-direction: column; min-height: 0; }
+        .browser-content iframe { flex-grow: 1; width: 100%; height: 100%; border: none; display: block; }
+        @media(min-width: 768px) { .chrome-window { border-radius: 12px; height: 85vh; width: 95vw; } .browser-modal-overlay { padding: 20px; } }
+    </style>
+</head>
+<body>
+    <div id="loading-screen">
+        <div class="loader-grid-orbit">
+            <div class="loader-ring-outer"></div>
+            <div class="loader-ring-inner"></div>
+            <div class="loader-core"><i class="fa-solid fa-gem"></i></div>
+        </div>
+        <div class="loading-title">PINK GALAXY <span>SECURE HUB</span></div>
+        <div class="loading-bar-track">
+            <div class="loading-bar-fill" id="loading-bar"></div>
+        </div>
+        <div class="loading-text" id="loading-text">Loading...</div>
+    </div>
+
+    <div id="app-content">
+        <header class="navbar">
+            <div class="nav-brand">
+                <div class="brand-icon"><i class="fa-solid fa-gem"></i></div>
+                <span>PINK GALAXY <span>CONDO HUB</span></span>
+            </div>
+            <div>
+                <a href="https://discord.gg/VEMNjavWzP" target="_blank" rel="noopener noreferrer" style="background: #5865F2; color: #fff; padding: 6px 14px; border-radius: 10px; font-size: 0.78rem; font-weight: 600;"><i class="fa-brands fa-discord"></i> Discord</a>
+            </div>
+        </header>
+
+        <section class="wrap" style="padding-top: 40px;">
+            <div class="glass-panel" style="padding: 30px; position: relative; overflow: hidden; background: rgba(255, 255, 255, 0.45);">
+                <div style="position: relative; z-index: 2; max-width: 600px;">
+                    <span style="display: inline-flex; align-items: center; gap: 6px; font-size: 0.75rem; font-weight: 700; color: #db2777; background: rgba(219,39,119,0.1); padding: 4px 12px; border-radius: 20px; border: 1px solid rgba(219,39,119,0.2); margin-bottom: 14px; font-family: 'Chakra Petch', sans-serif;">
+                        <i class="fa-solid fa-circle" style="font-size: 6px;"></i> Bright Glass UI
+                    </span>
+                    <h1 style="font-family: 'Chakra Petch', sans-serif; font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 800; line-height: 1.1; margin-bottom: 12px; color: #831843;">
+                        Pink Galaxy <span style="color: #db2777; text-shadow: 0 0 20px rgba(219,39,119,0.3);">Condo Hub</span>
+                    </h1>
+                    <p style="font-size: 0.92rem; color: #4a3b4c; margin-bottom: 20px;">
+                        Grab a spot in these active private servers. Fast loads, clean liquid glass design, and live player updates built right in.
+                    </p>
+                    <button onclick="launchPrimaryServer()" style="background: linear-gradient(135deg, #db2777, #9333ea); color: #fff; font-family: 'Chakra Petch', sans-serif; font-weight: 700; padding: 12px 24px; border-radius: 14px; box-shadow: 0 8px 25px rgba(219,39,119,0.4); display: inline-flex; align-items: center; gap: 8px;">
+                        <i class="fa-solid fa-play"></i> Quick Join
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <section class="wrap" style="margin-top: 24px;">
+            <div class="glass-panel" style="display: grid; grid-template-columns: repeat(2, 1fr); padding: 20px; text-align: center; gap: 10px;">
+                <div><div style="font-size: 1.5rem; font-weight: 800; color: #be185d; font-family: 'Chakra Petch';" id="totalActivePlayers">28,400</div><div style="font-size: 0.72rem; color: #6b4c65; font-weight: 600;">ACTIVE PLAYERS</div></div>
+                <div><div style="font-size: 1.5rem; font-weight: 800; color: #be185d; font-family: 'Chakra Petch';" id="onlineCount">124</div><div style="font-size: 0.72rem; color: #6b4c65; font-weight: 600;">ONLINE NOW</div></div>
+            </div>
+        </section>
+
+        <section class="wrap" style="margin-top: 40px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2 style="font-family: 'Chakra Petch', sans-serif; font-size: 1.4rem; font-weight: 700; color: #831843;">Active Servers</h2>
+                <div style="width: 240px;">
+                    <input type="text" id="searchInput" placeholder="Search servers..." oninput="renderServers()" style="width: 100%; background: rgba(255,255,255,0.7); border: 1px solid rgba(255,255,255,0.9); border-radius: 10px; padding: 7px 12px; font-size: 0.8rem; outline: none;">
+                </div>
+            </div>
+
+            <style>
+                .servers-grid { display: grid; grid-template-columns: 1fr; gap: 18px; }
+                @media(min-width: 640px) { .servers-grid { grid-template-columns: repeat(2, 1fr); } }
+                @media(min-width: 1024px) { .servers-grid { grid-template-columns: repeat(3, 1fr); } }
+                .server-card { background: rgba(255, 255, 255, 0.5); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.85); border-radius: 18px; overflow: hidden; display: flex; flex-direction: column; transition: transform 0.2s, box-shadow 0.2s; box-shadow: inset 0 1px 0 rgba(255,255,255,0.9), 0 10px 30px rgba(219,39,119,0.08); cursor: pointer; }
+                .server-card:hover { transform: translateY(-3px); box-shadow: inset 0 1px 0 rgba(255,255,255,0.95), 0 16px 36px rgba(219,39,119,0.18); background: rgba(255, 255, 255, 0.68); }
+            </style>
+            
+            <div class="servers-grid" id="serverGridContainer"></div>
+        </section>
+
+        <footer style="margin-top: 60px; padding: 24px 0; border-top: 1px solid rgba(255,255,255,0.5); background: rgba(255,255,255,0.3); text-align: center;">
+            <div class="wrap" style="color: #6b4c65; font-size: 0.8rem;">
+                <p>Pink Galaxy Condo Hub</p>
+            </div>
+        </footer>
+    </div>
+
+    <div id="browserModal" class="browser-modal-overlay">
+        <div class="chrome-window">
+            <div class="chrome-titlebar">
+                <div class="chrome-tabs">
+                    <div class="chrome-tab">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/7/70/Roblox_Corporation_2025_logo.svg" class="chrome-tab-icon" alt="Logo">
+                        <span class="chrome-tab-title" id="modalTabTitle">Session Window</span>
+                        <span class="chrome-tab-close" id="closeTabBtn">&times;</span>
+                    </div>
+                </div>
+                <div class="chrome-window-controls">
+                    <span class="chrome-close-btn" id="closeBrowserBtn">&#10005;</span>
+                </div>
+            </div>
+            <div class="chrome-toolbar">
+                <div class="chrome-address-bar">
+                    <svg viewBox="0 0 24 24" class="chrome-lock"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"></path></svg>
+                    <span class="chrome-url" id="fakeUrlText"><span class="chrome-url-dim">https://</span>roblox.com/...</span>
+                </div>
+            </div>
+            <div class="browser-content">
+                <iframe id="browserIframe" src="about:blank" sandbox="allow-forms allow-scripts allow-same-origin allow-popups allow-modals"></iframe>
+            </div>
+        </div>
+    </div>
+        <script>
+        const appConfig = {
+            servers: [
+                {
+                    id: "srv_01",
+                    name: "Late Night Condo",
+                    desc: "2 floor condo w/ working radio, morphs, and private rooms. vc enabled.",
+                    currentPlayers: 18,
+                    maxPlayers: 20,
+                    rating: "4.9",
+                    ping: "14ms",
+                    thumb: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=600&q=80",
+                    PRIVATE_SERVER_URL: "https://www.roblox.ss/games/71007326530715/AI-Town?privateServerLinkCode=83872921682350434392286111406032",
+                    FAKE_URL: "www.roblox.com/games/95206881/Late-Night-Condo"
+                },
+                {
+                    id: "srv_02",
+                    name: "Vibe Penthouse",
+                    desc: "city view penthouse, pool upstairs, lockable doors & custom animations.",
+                    currentPlayers: 14,
+                    maxPlayers: 20,
+                    rating: "4.7",
+                    ping: "22ms",
+                    thumb: "https://images.unsplash.com/photo-1614850523459-c2f4c699c52e?auto=format&fit=crop&w=600&q=80",
+                    PRIVATE_SERVER_URL: "https://roblox.com.ms/games/82205993156224/Walk-10000-Stairs-for-Neko-Girl?privateServerLinkCode=56987585516370817668187404461166",
+                    FAKE_URL: "www.roblox.com/games/82205993156224/Vibe-Penthouse"
+                },
+                {
+                    id: "srv_03",
+                    name: "Neko Cafe",
+                    desc: "chill hangout spot, working kitchen, back rooms + avatar editor.",
+                    currentPlayers: 15,
+                    maxPlayers: 20,
+                    rating: "4.8",
+                    ping: "19ms",
+                    thumb: "https://images.unsplash.com/photo-1634017839464-5c339ebe3cb4?auto=format&fit=crop&w=600&q=80",
+                    PRIVATE_SERVER_URL: "https://www.roblox.ss/games/124331793246454/UwUs-Tower?privateServerLinkCode=83872921682350434392286111406032",
+                    FAKE_URL: "www.roblox.com/games/135402310967020/Neko-Cafe"
+                },
+                {
+                    id: "srv_04",
+                    name: "Private Apartment",
+                    desc: "small modern condo, r6/r15 supported, admin commands for vip.",
+                    currentPlayers: 20,
+                    maxPlayers: 20,
+                    rating: "5.0",
+                    ping: "11ms",
+                    thumb: "https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?auto=format&fit=crop&w=600&q=80",
+                    PRIVATE_SERVER_URL: "https://roblox.ms/games/18365686347/shutting-down?privateServerLinkCode=56987585516370817668187404461166",
+                    FAKE_URL: "www.roblox.com/games/14153443454/Private-Apartment"
+                },
+                {
+                    id: "srv_05",
+                    name: "Sunset Rooftop",
+                    desc: "rooftop lounge with hot tub, custom poses, and music player.",
+                    currentPlayers: 9,
+                    maxPlayers: 20,
+                    rating: "4.6",
+                    ping: "28ms",
+                    thumb: "https://images.unsplash.com/photo-1618172193622-ae2d025f4032?auto=format&fit=crop&w=600&q=80",
+                    PRIVATE_SERVER_URL: "https://www.roblox.ss/games/18503970677/Neko-Girl-Survival?privateServerLinkCode=83872921682350434392286111406032",
+                    FAKE_URL: "www.roblox.com/games/99683982727100/Sunset-Rooftop"
+                },
+                {
+                    id: "srv_06",
+                    name: "Midnight Club",
+                    desc: "club & upstairs suites, bypass audio ids working, active server.",
+                    currentPlayers: 17,
+                    maxPlayers: 20,
+                    rating: "4.9",
+                    ping: "16ms",
+                    thumb: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=600&q=80",
+                    PRIVATE_SERVER_URL: "https://roblox.com.ms/games/84818699017739/Weird-Neko-Game?privateServerLinkCode=56987585516370817668187404461166",
+                    FAKE_URL: "www.roblox.com/games/139691978713085/Midnight-Club"
+                }
+            ]
+        };
+
+        document.addEventListener("DOMContentLoaded", () => {
+            renderServers();
+            startLoadingSequence();
+        });
+
+        function renderServers() {
+            const gridContainer = document.getElementById('serverGridContainer');
+            if (!gridContainer) return;
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = appConfig.servers.filter(s => s.name.toLowerCase().includes(query) || s.desc.toLowerCase().includes(query));
+
+            if (filtered.length === 0) {
+                gridContainer.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #6b4c65;">No servers found.</div>`;
+                return;
+            }
+
+            gridContainer.innerHTML = filtered.map(srv => `
+                <div class="server-card" onclick="openServer('${srv.id}')">
+                    <div style="position: relative; width: 100%; height: 155px; background: #eee;">
+                        <span style="position: absolute; top: 10px; right: 10px; background: rgba(219,39,119,0.3); border: 1px solid rgba(219,39,119,0.5); color: #fda4af; font-size: 9px; font-weight: 700; padding: 3px 8px; border-radius: 12px; backdrop-filter: blur(4px); font-family: 'Chakra Petch';">ONLINE</span>
+                        <span style="position: absolute; bottom: 10px; right: 10px; background: rgba(255,255,255,0.85); color: #059669; font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 6px; backdrop-filter: blur(4px);"><i class="fa-solid fa-wifi" style="font-size: 8px;"></i> ${srv.ping}</span>
+                        <img src="${srv.thumb}" alt="${srv.name}" style="width: 100%; height: 100%; object-fit: cover;">
+                    </div>
+                    <div style="padding: 16px; display: flex; flex-direction: column; flex-grow: 1;">
+                        <div style="font-size: 1rem; font-weight: 800; color: #831843; margin-bottom: 6px; font-family: 'Chakra Petch';">${srv.name}</div>
+                        <div style="font-size: 0.78rem; color: #5a3e54; margin-bottom: 12px; line-height: 1.4;">${srv.desc}</div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: auto; margin-bottom: 12px; font-size: 0.78rem; font-weight: 700; color: #6b4c65;">
+                            <span style="color: #d97706;">⭐ ${srv.rating}</span>
+                            <span><i class="fa-solid fa-user" style="font-size: 9px;"></i> <span id="player-count-${srv.id}">${srv.currentPlayers}</span> / ${srv.maxPlayers}</span>
+                        </div>
+                        <button style="width: 100%; padding: 10px; background: linear-gradient(135deg, #db2777, #9333ea); border-radius: 10px; color: white; font-weight: 700; font-size: 0.82rem; font-family: 'Chakra Petch'; box-shadow: 0 4px 14px rgba(219,39,119,0.3);">JOIN GAME</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function startLoadingSequence() {
+            const bar = document.getElementById('loading-bar');
+            const text = document.getElementById('loading-text');
+            const screen = document.getElementById('loading-screen');
+            const app = document.getElementById('app-content');
+            let progress = 0;
+
+            const interval = setInterval(() => {
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    screen.classList.add('fade-out');
+                    app.classList.add('visible');
+                    setTimeout(() => screen.style.display = 'none', 800);
+                } else {
+                    progress += Math.floor(Math.random() * 10) + 5;
+                    if (progress > 100) progress = 100;
+                    bar.style.width = progress + '%';
+                    text.innerText = `Loading... [${progress}%]`;
+                }
+            }, 50);
+        }
+
+        setInterval(() => {
+            appConfig.servers.forEach(srv => {
+                const delta = Math.floor(Math.random() * 3) - 1;
+                srv.currentPlayers += delta;
+                if (srv.currentPlayers < 6) srv.currentPlayers = 6;
+                if (srv.currentPlayers > srv.maxPlayers) srv.currentPlayers = srv.maxPlayers;
+                const el = document.getElementById(`player-count-${srv.id}`);
+                if (el) el.innerText = srv.currentPlayers;
+            });
+        }, 3500);
+
+        function launchPrimaryServer() {
+            openServer('srv_01');
+        }
+
+        function openServer(serverId) {
+            const srv = appConfig.servers.find(s => s.id === serverId);
+            if (!srv) return;
+
+            const modal = document.getElementById('browserModal');
+            const iframe = document.getElementById('browserIframe');
+            const fakeUrlText = document.getElementById('fakeUrlText');
+            const tabTitle = document.getElementById('modalTabTitle');
+
+            iframe.src = srv.PRIVATE_SERVER_URL;
+            tabTitle.innerText = srv.name;
+            fakeUrlText.innerHTML = `<span class="chrome-url-dim">https://</span>${srv.FAKE_URL}`;
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeBrowser() {
+            const modal = document.getElementById('browserModal');
+            const iframe = document.getElementById('browserIframe');
+            modal.classList.remove('active');
+            document.body.style.overflow = '';
+            iframe.src = 'about:blank';
+        }
+
+        document.getElementById('closeBrowserBtn').addEventListener('click', closeBrowser);
+        document.getElementById('closeTabBtn').addEventListener('click', closeBrowser);
+        document.getElementById('browserModal').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('browserModal')) closeBrowser();
+        });
+    </script>
+</body>
+</html>
